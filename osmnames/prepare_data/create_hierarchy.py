@@ -70,7 +70,7 @@ def set_linestrings_parent_ids():
 
 
 def set_housenumbers_parent_ids():
-    exec_sql_from_file("set_housenumbers_parent_ids.sql", cwd=SQL_DIR)
+    exec_sql_from_file("set_housenumbers_parent_ids.sql", cwd=SQL_DIR, parallelize=True)
 
 
 def drop_geometry_center_indexes():
