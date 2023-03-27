@@ -29,7 +29,7 @@ def normalize_street_names():
 
 
 def set_street_ids_by_street_name():
-    exec_sql_from_file("set_street_ids_by_street_name.sql", cwd=SQL_DIR)
+    exec_sql_from_file("set_street_ids_by_street_name.sql", cwd=SQL_DIR, parallelize=True)
 
 
 def set_street_attributes_by_nearest_street():
