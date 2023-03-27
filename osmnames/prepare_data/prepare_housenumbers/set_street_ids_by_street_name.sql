@@ -34,7 +34,8 @@ FROM osm_linestring AS street
 WHERE street.parent_id = housenumber.parent_id
       AND street.normalized_name = housenumber.normalized_street
       AND housenumber.street_id IS NULL
-      AND housenumber.normalized_street != ''; --&
+      AND housenumber.normalized_street != ''
+      AND auto_modulo(housenumber.id); --&
 
 -- set street id by fully matching names within range
 UPDATE osm_housenumber AS housenumber
@@ -45,14 +46,20 @@ WHERE st_dwithin(street.geometry, housenumber.geometry_center, 1000)
       AND (street.parent_id = housenumber.parent_id) IS NOT TRUE
       AND street.normalized_name = housenumber.normalized_street
       AND housenumber.street_id IS NULL
-      AND housenumber.normalized_street != ''; --&
+      AND housenumber.normalized_street != ''
+      AND auto_modulo(housenumber.id); --&
+
+-- dummy query to ensure the parallelized queries above finish before starting
+-- the next one.
+SELECT 1;
 
 -- set street id by best matching name within same parent
 UPDATE osm_housenumber
   SET street_id = best_matching_street_within_parent(parent_id, geometry_center, normalized_street)
   WHERE street_id IS NULL
         AND normalized_street <> ''
-        AND parent_id IS NOT NULL;
+        AND parent_id IS NOT NULL
+        AND auto_modulo(id); --&
 
 
 -- This step is commented since it is to expensive to execute for a large amount of house numbers.
